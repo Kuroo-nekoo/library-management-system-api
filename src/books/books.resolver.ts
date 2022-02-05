@@ -1,3 +1,4 @@
+import { FindBookArgs } from './dto/find-book.args';
 import {
   Resolver,
   Query,
@@ -39,8 +40,8 @@ export class BooksResolver {
   }
 
   @Query(() => Book, { name: 'book' })
-  findOne(@Args('id', { type: () => ID }) id: string) {
-    return this.booksService.findOne(id);
+  findOne(@Args(ValidationPipe) findBookArgs: FindBookArgs) {
+    return this.booksService.findOne(findBookArgs);
   }
 
   @ResolveField(() => [Author], { name: 'authors' })
