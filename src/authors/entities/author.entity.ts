@@ -3,7 +3,6 @@ import { Book } from 'src/books/entities/book.entity';
 import {
   Column,
   Entity,
-  JoinColumn,
   JoinTable,
   ManyToMany,
   PrimaryGeneratedColumn,
@@ -25,7 +24,7 @@ export class Author {
   age: number;
 
   @Field(() => [Book])
-  @ManyToMany(() => Book, (book) => book.authors)
+  @ManyToMany(() => Book, (book) => book.authors, { cascade: true })
   @JoinTable()
   books: Book[];
 }

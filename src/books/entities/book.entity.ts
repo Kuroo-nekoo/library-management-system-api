@@ -1,5 +1,5 @@
 import { User } from './../../users/entities/user.entity';
-import { ObjectType, Field, ID } from '@nestjs/graphql';
+import { ObjectType, Field, ID, Int } from '@nestjs/graphql';
 import { Author } from 'src/authors/entities/author.entity';
 import {
   Column,
@@ -8,6 +8,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Category } from 'src/categories/entities/category.entity';
 
 @ObjectType()
 @Entity()
@@ -24,10 +25,18 @@ export class Book {
   @Column()
   barcode: string;
 
-  @Field(() => Author)
-  @ManyToMany(() => Author, (author) => author.books)
+  @Field(() => Int)
+  @Column('int', { default: 0 })
+  available: number;
+
+  @Field(() => [Category])
+  @ManyToMany(() => Author, (author) => author.books, { cascade: true })
+  categories: Category[];
+
+  @Field(() => [Author])
+  @ManyToMany(() => Author, (author) => author.books, { cascade: true })
   authors: Author[];
 
-  @ManyToOne(() => User, (user) => user.books)
+  @ManyToOne(() => User, (user) => user.books, { cascade: true })
   user: User;
 }
