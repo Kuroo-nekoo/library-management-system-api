@@ -17,20 +17,30 @@ type Author {
   books: [Book!]!
 }
 
+type Category {
+  id: String!
+  value: String!
+  books: [Book!]!
+}
+
 type Book {
   id: ID!
   title: String!
   barcode: String!
+  available: Int!
+  categories: [Category!]!
   authors: [Author!]!
 }
 
 type Query {
   books: [Book!]!
-  book(bookId: ID, barcode: ID): Book!
+  book(bookId: ID, barcode: String): Book!
   authors: [Author!]!
   author(id: ID!): Author!
   users: [User!]!
-  user(id: String!): User!
+  user(id: ID!): User!
+  categories: [Category!]!
+  category(id: ID!): Category!
 }
 
 type Mutation {
@@ -42,8 +52,12 @@ type Mutation {
   removeAuthor(id: ID!): Author!
   createUser(createUserInput: CreateUserInput!): User!
   updateUser(updateUserInput: UpdateUserInput!): User!
-  removeUser(id: String!): User!
-  checkOutBook(borrowBookInput: CheckOutBookInput!): User!
+  removeUser(id: ID!): User!
+  checkOutBook(checkOutBookInput: CheckOutBookInput!): User!
+  returnBook(returnBookInput: ReturnBookInput!): Book
+  createCategory(createCategoryInput: CreateCategoryInput!): Category!
+  updateCategory(updateCategoryInput: UpdateCategoryInput!): Category!
+  removeCategory(id: Int!): Category!
 }
 
 input CreateBookInput {
@@ -90,5 +104,19 @@ input CheckOutBookInput {
 
 input FindBookInput {
   bookId: ID
-  barcode: ID
+  barcode: String
+}
+
+input ReturnBookInput {
+  userId: ID!
+  findBookInput: FindBookInput!
+}
+
+input CreateCategoryInput {
+  value: String!
+}
+
+input UpdateCategoryInput {
+  value: String
+  id: Int!
 }

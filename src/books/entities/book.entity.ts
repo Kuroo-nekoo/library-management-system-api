@@ -30,13 +30,13 @@ export class Book {
   available: number;
 
   @Field(() => [Category])
-  @ManyToMany(() => Author, (author) => author.books, { cascade: true })
+  @ManyToMany(() => Author, (author) => author.books)
   categories: Category[];
 
   @Field(() => [Author])
-  @ManyToMany(() => Author, (author) => author.books, { cascade: true })
+  @ManyToMany(() => Author, (author) => author.books)
   authors: Author[];
 
-  @ManyToOne(() => User, (user) => user.books, { cascade: true })
+  @ManyToOne(() => User, (user) => user.books)
   user: User;
 }

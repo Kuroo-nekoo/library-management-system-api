@@ -13,6 +13,6 @@ export class FindBookInput extends FindBookArgs {
   @IsOptional()
   @IsString()
   @IsNotEmpty()
-  @Field(() => ID, { nullable: true })
+  @Field({ nullable: true })
   barcode?: string;
 }

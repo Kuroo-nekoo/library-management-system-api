@@ -1,7 +1,7 @@
+import { ValidationPipe } from '@nestjs/common';
 import {
   Mutation,
   Args,
-  Int,
   Resolver,
   Query,
   ID,
@@ -20,7 +20,8 @@ export class AuthorsResolver {
 
   @Mutation(() => Author)
   createAuthor(
-    @Args('createAuthorInput') createAuthorInput: CreateAuthorInput,
+    @Args('createAuthorInput', ValidationPipe)
+    createAuthorInput: CreateAuthorInput,
   ) {
     return this.authorsService.create(createAuthorInput);
   }
@@ -42,7 +43,8 @@ export class AuthorsResolver {
 
   @Mutation(() => Author)
   updateAuthor(
-    @Args('updateAuthorInput') updateAuthorInput: UpdateAuthorInput,
+    @Args('updateAuthorInput', ValidationPipe)
+    updateAuthorInput: UpdateAuthorInput,
   ) {
     return this.authorsService.update(updateAuthorInput.id, updateAuthorInput);
   }

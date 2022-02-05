@@ -1,11 +1,11 @@
 import { BooksService } from './../books/books.service';
 import { CheckOutBookInput } from './dto/checkout-book.input';
-import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, ID } from '@nestjs/graphql';
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
-import { ValidationPipe, NotFoundException } from '@nestjs/common';
+import { ValidationPipe } from '@nestjs/common';
 import { Book } from 'src/books/entities/book.entity';
 import { ReturnBookInput } from './dto/return-book.input';
 
@@ -29,17 +29,19 @@ export class UsersResolver {
   }
 
   @Query(() => User, { name: 'user' })
-  findOne(@Args('id') id: string) {
+  findOne(@Args('id', { type: () => ID }) id: string) {
     return this.usersService.findOne(id);
   }
 
   @Mutation(() => User)
-  updateUser(@Args('updateUserInput') updateUserInput: UpdateUserInput) {
+  updateUser(
+    @Args('updateUserInput', ValidationPipe) updateUserInput: UpdateUserInput,
+  ) {
     return this.usersService.update(updateUserInput.id, updateUserInput);
   }
 
   @Mutation(() => User)
-  removeUser(@Args('id') id: string) {
+  removeUser(@Args('id', { type: () => ID }) id: string) {
     return this.usersService.remove(id);
   }
 

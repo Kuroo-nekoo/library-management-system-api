@@ -46,9 +46,7 @@ export class BooksResolver {
 
   @ResolveField(() => [Author], { name: 'authors' })
   async findBookAuthor(@Parent() { id }: Book) {
-    const authors = await this.booksService.findBookAuthors(id);
-
-    return authors;
+    return this.booksService.findBookAuthors(id);
   }
 
   @Mutation(() => Book)
