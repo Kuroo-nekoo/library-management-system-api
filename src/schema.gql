@@ -2,6 +2,14 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type User {
+  id: ID!
+  username: String!
+  password: String!
+  name: String!
+  books: [Book!]!
+}
+
 type Author {
   id: ID!
   name: String!
@@ -18,9 +26,11 @@ type Book {
 
 type Query {
   books: [Book!]!
-  book(id: ID, barcode: ID): Book!
+  book(bookId: ID, barcode: ID): Book!
   authors: [Author!]!
   author(id: ID!): Author!
+  users: [User!]!
+  user(id: String!): User!
 }
 
 type Mutation {
@@ -30,6 +40,10 @@ type Mutation {
   createAuthor(createAuthorInput: CreateAuthorInput!): Author!
   updateAuthor(updateAuthorInput: UpdateAuthorInput!): Author!
   removeAuthor(id: ID!): Author!
+  createUser(createUserInput: CreateUserInput!): User!
+  updateUser(updateUserInput: UpdateUserInput!): User!
+  removeUser(id: String!): User!
+  checkOutBook(borrowBookInput: CheckOutBookInput!): User!
 }
 
 input CreateBookInput {
@@ -54,4 +68,27 @@ input UpdateAuthorInput {
   name: String
   age: Int
   id: Int!
+}
+
+input CreateUserInput {
+  username: String!
+  password: String!
+  name: String!
+}
+
+input UpdateUserInput {
+  username: String
+  password: String
+  name: String
+  id: Int!
+}
+
+input CheckOutBookInput {
+  userId: ID!
+  findBookArgs: FindBookInput!
+}
+
+input FindBookInput {
+  bookId: ID
+  barcode: ID
 }

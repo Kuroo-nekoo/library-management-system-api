@@ -1,6 +1,4 @@
-import { ID } from '@nestjs/graphql';
 import { FindBookArgs } from './dto/find-book.args';
-import { AuthorsService } from './../authors/authors.service';
 import { BookRepository } from './book.repository';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateBookInput } from './dto/create-book.input';
@@ -25,10 +23,10 @@ export class BooksService {
 
   findOne(findBookArgs: FindBookArgs) {
     try {
-      const { id, barcode } = findBookArgs;
+      const { bookId, barcode } = findBookArgs;
 
-      if (id) {
-        return this.bookRepository.findOne(id);
+      if (bookId) {
+        return this.bookRepository.findOne(bookId);
       } else if (barcode) {
         return this.bookRepository.findOne({ where: { barcode } });
       }
@@ -56,8 +54,6 @@ export class BooksService {
     const book = await this.bookRepository.findOne(id, {
       relations: ['authors'],
     });
-
-    // console.log(book.authors);
 
     return book.authors;
   }

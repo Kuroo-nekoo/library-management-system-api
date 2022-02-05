@@ -52,7 +52,9 @@ export class BooksResolver {
   }
 
   @Mutation(() => Book)
-  updateBook(@Args('updateBookInput') updateBookInput: UpdateBookInput) {
+  updateBook(
+    @Args('updateBookInput', ValidationPipe) updateBookInput: UpdateBookInput,
+  ) {
     return this.booksService.update(updateBookInput.id, updateBookInput);
   }
 

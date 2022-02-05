@@ -1,8 +1,9 @@
-import { ArgsType, Field, ID, InputType } from '@nestjs/graphql';
+import { Field, ID, InputType } from '@nestjs/graphql';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { FindBookArgs } from './find-book.args';
 
-@ArgsType()
-export class FindBookArgs {
+@InputType()
+export class FindBookInput extends FindBookArgs {
   @IsOptional()
   @IsString()
   @IsNotEmpty()
