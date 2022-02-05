@@ -45,13 +45,13 @@ export class UsersResolver {
 
   @Mutation(() => User)
   async checkOutBook(
-    @Args('borrowBookInput', ValidationPipe)
+    @Args('checkOutBookInput', ValidationPipe)
     checkOutBookInput: CheckOutBookInput,
   ) {
     const { userId, findBookArgs } = checkOutBookInput;
-    const bookToBorrow = await this.booksService.findOne(findBookArgs);
+    const bookToCheckOut = await this.booksService.findOne(findBookArgs);
 
-    return this.usersService.checkOutBook(userId, bookToBorrow);
+    return this.usersService.checkOutBook(userId, bookToCheckOut);
   }
 
   @Mutation(() => Book, { nullable: true })
