@@ -44,6 +44,11 @@ export class UsersService {
         'One user can only borrow a maximum of 4 book at one time',
       );
     }
+
+    if (user.books.findIndex((book) => book.id === bookToCheckOut.id) !== -1) {
+      throw new NotFoundException('User already has this book');
+    }
+
     if (bookToCheckOut.available <= 0) {
       throw new NotFoundException('There are no available books');
     } else {
@@ -51,8 +56,7 @@ export class UsersService {
     }
 
     user.books.push(bookToCheckOut);
-    this.usersRepository.save(user);
-    return user;
+    return this.usersRepository.save(user);
   }
 
   async returnBook(userId: string, bookToReturn: Book) {
