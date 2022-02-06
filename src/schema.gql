@@ -57,7 +57,7 @@ type Mutation {
   returnBook(returnBookInput: ReturnBookInput!): Book
   createCategory(createCategoryInput: CreateCategoryInput!): Category!
   updateCategory(updateCategoryInput: UpdateCategoryInput!): Category!
-  removeCategory(id: Int!): Category!
+  removeCategory(id: String!): Category!
 }
 
 input CreateBookInput {
@@ -70,7 +70,7 @@ input UpdateBookInput {
   title: String
   barcode: String
   authorIds: [String!]
-  id: Int!
+  id: ID!
 }
 
 input CreateAuthorInput {
@@ -81,7 +81,7 @@ input CreateAuthorInput {
 input UpdateAuthorInput {
   name: String
   age: Int
-  id: Int!
+  id: ID!
 }
 
 input CreateUserInput {
@@ -94,7 +94,7 @@ input UpdateUserInput {
   username: String
   password: String
   name: String
-  id: Int!
+  id: ID!
 }
 
 input CheckOutBookInput {
@@ -118,5 +118,5 @@ input CreateCategoryInput {
 
 input UpdateCategoryInput {
   value: String
-  id: Int!
+  id: ID!
 }

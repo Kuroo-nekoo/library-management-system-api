@@ -6,6 +6,9 @@ import { AuthorsModule } from './authors/authors.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path/posix';
 import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core/dist/plugin/landingPage/default';
+import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -33,6 +36,9 @@ import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core/di
     }),
     BooksModule,
     AuthorsModule,
+    UsersModule,
+    AuthModule,
+    CategoriesModule,
   ],
 })
 export class AppModule {}

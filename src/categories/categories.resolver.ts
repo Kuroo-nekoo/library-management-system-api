@@ -1,5 +1,5 @@
 import { ValidationPipe } from '@nestjs/common';
-import { Resolver, Query, Mutation, Args, Int, ID } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, ID } from '@nestjs/graphql';
 import { CategoriesService } from './categories.service';
 import { Category } from './entities/category.entity';
 import { CreateCategoryInput } from './dto/create-category.input';
@@ -38,7 +38,7 @@ export class CategoriesResolver {
   }
 
   @Mutation(() => Category)
-  removeCategory(@Args('id', { type: () => Int }) id: number) {
+  removeCategory(@Args('id') id: string) {
     return this.categoriesService.remove(id);
   }
 }
