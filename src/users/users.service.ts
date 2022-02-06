@@ -38,12 +38,25 @@ export class UsersService {
     }
   }
 
-  update(id: number, updateUserInput: UpdateUserInput) {
-    return `This action updates a #${id} user`;
+  async update(id: string, updateUserInput: UpdateUserInput) {
+    try {
+      this.usersRepository.update(id, updateUserInput);
+      const updatedUser = await this.usersRepository.findOneOrFail(id);
+
+      return updatedUser;
+    } catch (error) {
+      throw new NotFoundException(`User with id ${id} does not exist`);
+    }
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} user`;
+  async remove(id: string) {
+    try {
+      const userToRemove = await this.usersRepository.findOneOrFail(id);
+      this.usersRepository.remove(userToRemove);
+      return userToRemove;
+    } catch (error) {
+      throw new NotFoundException(`User with id ${id} does not exist`);
+    }
   }
 
   async checkOutBook(userId: string, bookToCheckOut: Book) {
