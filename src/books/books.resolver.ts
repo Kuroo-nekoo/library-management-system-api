@@ -27,13 +27,15 @@ export class BooksResolver {
   async createBook(
     @Args('createBookInput', ValidationPipe) createBookInput: CreateBookInput,
   ) {
-    const authors = await this.authorsService
-      .findByIds(createBookInput.authorIds)
-      .catch((error) => {
-        throw new NotFoundException("Author doesn't exist");
-      });
+    try {
+      const authors = await this.authorsService.findByIds(
+        createBookInput.authorIds,
+      );
 
-    return this.booksService.create(createBookInput, authors);
+      return this.booksService.create(createBookInput, authors);
+    } catch (error) {
+      throw new NotFoundException("Author doesn't exist");
+    }
   }
 
   @Query(() => [Book], { name: 'books' })

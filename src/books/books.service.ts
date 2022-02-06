@@ -43,8 +43,13 @@ export class BooksService {
     }
   }
 
-  update(id: number, updateBookInput: UpdateBookInput) {
-    return `This action updates a #${id} book`;
+  async update(id: string, updateBookInput: UpdateBookInput) {
+    try {
+      await this.bookRepository.update(id, updateBookInput);
+      return this.bookRepository.findOneOrFail(id);
+    } catch (error) {
+      throw new NotFoundException("Book doesn't exist!");
+    }
   }
 
   async remove(id: string) {
@@ -59,10 +64,14 @@ export class BooksService {
   }
 
   async findBookAuthors(id: string) {
-    const book = await this.bookRepository.findOne(id, {
-      relations: ['authors'],
-    });
+    try {
+      const book = await this.bookRepository.findOne(id, {
+        relations: ['authors'],
+      });
 
-    return book.authors;
+      return book.authors;
+    } catch (error) {
+      throw new NotFoundException("Book doesn't exist!");
+    }
   }
 }
