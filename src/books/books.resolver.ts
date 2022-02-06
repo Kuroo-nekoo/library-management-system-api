@@ -5,7 +5,6 @@ import {
   Query,
   Mutation,
   Args,
-  ID,
   ResolveField,
   Parent,
 } from '@nestjs/graphql';

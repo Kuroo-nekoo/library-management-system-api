@@ -1,12 +1,21 @@
+import { CheckOutBookInput } from './dto/check-out-book.input';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Book } from 'src/books/entities/book.entity';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { UsersRepository } from './users.repository';
+import { CheckedOutBooksService } from 'src/checked-out-book/checked-out-books.service';
+import { BooksService } from 'src/books/books.service';
+import { ReturnBookInput } from './dto/return-book.input';
+import { User } from './entities/user.entity';
+import { Book } from 'src/books/entities/book.entity';
 
 @Injectable()
 export class UsersService {
-  constructor(private usersRepository: UsersRepository) {}
+  constructor(
+    private usersRepository: UsersRepository,
+    private readonly booksService: BooksService,
+    private readonly checkOutBooksService: CheckedOutBooksService,
+  ) {}
 
   create(createUserInput: CreateUserInput) {
     return this.usersRepository.save(
@@ -34,7 +43,7 @@ export class UsersService {
 
       return user.books;
     } catch (error) {
-      throw new NotFoundException("User with id '${userId}' does not exist");
+      throw new NotFoundException(`User with id '${userId}' does not exist`);
     }
   }
 
@@ -59,14 +68,26 @@ export class UsersService {
     }
   }
 
-  async checkOutBook(userId: string, bookToCheckOut: Book) {
-    const user = await this.usersRepository
-      .findOneOrFail(userId, {
+  async checkOutBook(checkOutBookInput: CheckOutBookInput) {
+    const { userId, findBookInput, checkOutDate, dueDay } = checkOutBookInput;
+    let user: User;
+    let bookToCheckOut: Book;
+
+    try {
+      user = await this.usersRepository.findOneOrFail(userId, {
         relations: ['books'],
-      })
-      .catch((error) => {
-        throw new NotFoundException(`User with id ${userId} does not exist`);
       });
+    } catch (error) {
+      throw new NotFoundException(`User with id ${userId} does not exist`);
+    }
+
+    try {
+      bookToCheckOut = await this.booksService.findOne(findBookInput);
+    } catch (error) {
+      throw new NotFoundException(
+        `Book with id '${findBookInput.id}' does not exist`,
+      );
+    }
 
     if (user.books.length >= 4) {
       throw new NotFoundException(
@@ -84,31 +105,45 @@ export class UsersService {
       bookToCheckOut.available--;
     }
 
-    user.books.push(bookToCheckOut);
+    user.books.push(
+      await this.checkOutBooksService.create({
+        ...bookToCheckOut,
+        checkOutDate,
+        dueDay: dueDay
+          ? dueDay
+          : new Date(new Date(checkOutDate).getTime() + 1209600000 + 25200000)
+              .toISOString()
+              .slice(0, 19)
+              .replace('T', ' '),
+      }),
+    );
     return this.usersRepository.save(user);
   }
 
-  async returnBook(userId: string, bookToReturn: Book) {
-    const user = await this.usersRepository
-      .findOneOrFail(userId, {
+  async returnBook(returnBookInput: ReturnBookInput) {
+    const { userId, findBookInput } = returnBookInput;
+
+    try {
+      const user = await this.usersRepository.findOneOrFail(userId, {
         relations: ['books'],
-      })
-      .catch((error) => {
-        throw new NotFoundException(`User with id ${userId} does not exist`);
       });
-    const bookIndex = user.books.findIndex(
-      (book) => book.id === bookToReturn.id,
-    );
-
-    if (bookIndex === -1) {
-      throw new NotFoundException(
-        `Book with id ${bookToReturn.id} does not belong to user with id ${userId}`,
+      const bookToReturn = await this.booksService.findOne(findBookInput);
+      const bookIdx = user.books.findIndex(
+        (book) => book.id === bookToReturn.id,
       );
-    }
 
-    user.books.splice(bookIndex, 1);
-    bookToReturn.available++;
-    this.usersRepository.save(user);
-    return user;
+      if (bookIdx === -1) {
+        throw new NotFoundException(
+          `Book with id ${bookToReturn.id} does not belong to user with id ${userId}`,
+        );
+      }
+
+      user.books.splice(bookIdx, 1);
+      bookToReturn.available++;
+      this.usersRepository.save(user);
+      return user;
+    } catch (error) {
+      throw new NotFoundException(`User with id ${userId} does not exist`);
+    }
   }
 }

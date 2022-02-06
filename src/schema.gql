@@ -2,14 +2,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type User {
-  id: ID!
-  username: String!
-  password: String!
-  name: String!
-  books: [Book!]!
-}
-
 type Author {
   id: ID!
   name: String!
@@ -32,6 +24,25 @@ type Category {
   books: [Book!]!
 }
 
+type User {
+  id: ID!
+  username: String!
+  password: String!
+  name: String!
+  books: [CheckedOutBook!]!
+}
+
+type CheckedOutBook {
+  id: ID!
+  title: String!
+  barcode: String!
+  available: Int!
+  categories: [Category!]!
+  authors: [Author!]!
+  checkOutDate: String!
+  dueDay: String!
+}
+
 type Query {
   books: [Book!]!
   book(id: ID, barcode: String): Book!
@@ -41,6 +52,7 @@ type Query {
   category(id: ID!): Category!
   users: [User!]!
   user(id: ID!): User!
+  checkedOutBook(id: Int!): CheckedOutBook!
 }
 
 type Mutation {
@@ -59,6 +71,8 @@ type Mutation {
   removeUser(id: ID!): User!
   checkOutBook(checkOutBookInput: CheckOutBookInput!): User!
   returnBook(returnBookInput: ReturnBookInput!): Book
+  updateCheckedOutBook(updateCheckedOutBookInput: UpdateCheckedOutBookInput!): CheckedOutBook!
+  removeCheckedOutBook(id: Int!): CheckedOutBook!
 }
 
 input CreateBookInput {
@@ -119,10 +133,20 @@ input UpdateUserInput {
 
 input CheckOutBookInput {
   userId: ID!
-  findBookArgs: FindBookInput!
+  findBookInput: FindBookInput!
+  checkOutDate: String!
+  dueDay: String
 }
 
 input ReturnBookInput {
   userId: ID!
   findBookInput: FindBookInput!
+}
+
+input UpdateCheckedOutBookInput {
+  title: String
+  barcode: String
+  checkOutDate: String
+  dueDay: String
+  id: Int!
 }

@@ -1,5 +1,5 @@
-import { BooksService } from './../books/books.service';
-import { CheckOutBookInput } from './dto/checkout-book.input';
+import { CheckedOutBook } from './../checked-out-book/entities/checked-out-book.entity';
+import { CheckOutBookInput } from './dto/check-out-book.input';
 import {
   Resolver,
   Query,
@@ -19,10 +19,7 @@ import { ReturnBookInput } from './dto/return-book.input';
 
 @Resolver(() => User)
 export class UsersResolver {
-  constructor(
-    private readonly usersService: UsersService,
-    private readonly booksService: BooksService,
-  ) {}
+  constructor(private readonly usersService: UsersService) {}
 
   @Mutation(() => User)
   createUser(
@@ -41,7 +38,7 @@ export class UsersResolver {
     return this.usersService.findOne(id);
   }
 
-  @ResolveField(() => [Book], { name: 'books' })
+  @ResolveField(() => [CheckedOutBook], { name: 'books' })
   findCheckedOutBooks(@Parent() { id }: User) {
     return this.usersService.findCheckedOutBooks(id);
   }
@@ -63,19 +60,13 @@ export class UsersResolver {
     @Args('checkOutBookInput', ValidationPipe)
     checkOutBookInput: CheckOutBookInput,
   ) {
-    const { userId, findBookArgs } = checkOutBookInput;
-    const bookToCheckOut = await this.booksService.findOne(findBookArgs);
-
-    return this.usersService.checkOutBook(userId, bookToCheckOut);
+    return this.usersService.checkOutBook(checkOutBookInput);
   }
 
   @Mutation(() => Book, { nullable: true })
   async returnBook(
     @Args('returnBookInput', ValidationPipe) returnBookInput: ReturnBookInput,
   ) {
-    const { userId, findBookInput } = returnBookInput;
-    const bookToReturn = await this.booksService.findOne(findBookInput);
-
-    return this.usersService.returnBook(userId, bookToReturn);
+    return this.usersService.returnBook(returnBookInput);
   }
 }

@@ -1,3 +1,4 @@
+import { CheckedOutBook } from './../../checked-out-book/entities/checked-out-book.entity';
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { Book } from 'src/books/entities/book.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
@@ -21,7 +22,7 @@ export class User {
   @Column()
   name: string;
 
-  @Field(() => [Book])
-  @OneToMany(() => Book, (book) => book.user, { cascade: true })
+  @Field(() => [CheckedOutBook])
+  @OneToMany(() => CheckedOutBook, (book) => book.user, { cascade: true })
   books: Book[];
 }
