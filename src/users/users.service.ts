@@ -15,14 +15,26 @@ export class UsersService {
   }
 
   findAll() {
-    return this.usersRepository.find({ relations: ['books'] });
+    return this.usersRepository.find();
   }
 
   findOne(id: string) {
     try {
-      return this.usersRepository.findOneOrFail(id, { relations: ['books'] });
+      return this.usersRepository.findOneOrFail(id);
     } catch (error) {
-      throw new NotFoundException();
+      throw new NotFoundException("User with id '${id}' does not exist");
+    }
+  }
+
+  async findCheckedOutBooks(userId: string) {
+    try {
+      const user = await this.usersRepository.findOneOrFail(userId, {
+        relations: ['books'],
+      });
+
+      return user.books;
+    } catch (error) {
+      throw new NotFoundException("User with id '${userId}' does not exist");
     }
   }
 
@@ -35,9 +47,13 @@ export class UsersService {
   }
 
   async checkOutBook(userId: string, bookToCheckOut: Book) {
-    const user = await this.usersRepository.findOneOrFail(userId, {
-      relations: ['books'],
-    });
+    const user = await this.usersRepository
+      .findOneOrFail(userId, {
+        relations: ['books'],
+      })
+      .catch((error) => {
+        throw new NotFoundException(`User with id ${userId} does not exist`);
+      });
 
     if (user.books.length >= 4) {
       throw new NotFoundException(
@@ -60,9 +76,13 @@ export class UsersService {
   }
 
   async returnBook(userId: string, bookToReturn: Book) {
-    const user = await this.usersRepository.findOneOrFail(userId, {
-      relations: ['books'],
-    });
+    const user = await this.usersRepository
+      .findOneOrFail(userId, {
+        relations: ['books'],
+      })
+      .catch((error) => {
+        throw new NotFoundException(`User with id ${userId} does not exist`);
+      });
     const bookIndex = user.books.findIndex(
       (book) => book.id === bookToReturn.id,
     );
@@ -72,9 +92,10 @@ export class UsersService {
         `Book with id ${bookToReturn.id} does not belong to user with id ${userId}`,
       );
     }
+
     user.books.splice(bookIndex, 1);
-    this.usersRepository.save(user);
     bookToReturn.available++;
+    this.usersRepository.save(user);
     return user;
   }
 }

@@ -1,6 +1,10 @@
 import { FindBookArgs } from './dto/find-book.args';
 import { BookRepository } from './book.repository';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateBookInput } from './dto/create-book.input';
 import { UpdateBookInput } from './dto/update-book.input';
 import { Author } from 'src/authors/entities/author.entity';
@@ -25,13 +29,17 @@ export class BooksService {
     try {
       const { bookId, barcode } = findBookArgs;
 
+      if (!bookId && !barcode) {
+        throw new BadRequestException('You must provide bookId or barcode');
+      }
+
       if (bookId) {
         return this.bookRepository.findOne(bookId);
       } else if (barcode) {
         return this.bookRepository.findOne({ where: { barcode } });
       }
     } catch (error) {
-      throw new NotFoundException();
+      throw new NotFoundException("Book doesn't exist");
     }
   }
 
@@ -46,7 +54,7 @@ export class BooksService {
       this.bookRepository.remove(bookToRemove);
       return bookToRemove;
     } catch (error) {
-      throw new NotFoundException();
+      throw new NotFoundException("Book doesn't exist!");
     }
   }
 

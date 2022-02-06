@@ -12,7 +12,7 @@ import { BooksService } from './books.service';
 import { Book } from './entities/book.entity';
 import { CreateBookInput } from './dto/create-book.input';
 import { UpdateBookInput } from './dto/update-book.input';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, NotFoundException } from '@nestjs/common';
 import { Author } from 'src/authors/entities/author.entity';
 import { AuthorsService } from 'src/authors/authors.service';
 
@@ -27,9 +27,11 @@ export class BooksResolver {
   async createBook(
     @Args('createBookInput', ValidationPipe) createBookInput: CreateBookInput,
   ) {
-    const authors = await this.authorsService.findByIds(
-      createBookInput.authorIds,
-    );
+    const authors = await this.authorsService
+      .findByIds(createBookInput.authorIds)
+      .catch((error) => {
+        throw new NotFoundException("Author doesn't exist");
+      });
 
     return this.booksService.create(createBookInput, authors);
   }

@@ -21,20 +21,28 @@ export class AuthorsService {
     try {
       return this.authorRepository.findOne(id);
     } catch (error) {
-      throw new NotFoundException();
+      throw new NotFoundException("Author doesn't exist!");
     }
   }
 
   findByIds(authorIds: string[]) {
-    return this.authorRepository.findByIds(authorIds);
+    try {
+      return this.authorRepository.findByIds(authorIds);
+    } catch (error) {
+      throw new NotFoundException("Author doesn't exist!");
+    }
   }
 
   async findBooksOfAuthor(authorId: string) {
-    const author = this.authorRepository.findOne(authorId, {
-      relations: ['books'],
-    });
+    try {
+      const author = await this.authorRepository.findOneOrFail(authorId, {
+        relations: ['books'],
+      });
 
-    return (await author).books;
+      return author.books;
+    } catch (error) {
+      throw new NotFoundException("Author doesn't exist!");
+    }
   }
 
   update(id: number, updateAuthorInput: UpdateAuthorInput) {
@@ -48,7 +56,7 @@ export class AuthorsService {
       this.authorRepository.remove(authorToRemove);
       return authorToRemove;
     } catch (error) {
-      throw new NotFoundException();
+      throw new NotFoundException("Author doesn't exist!");
     }
   }
 }
