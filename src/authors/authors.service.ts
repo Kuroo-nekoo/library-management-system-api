@@ -1,5 +1,5 @@
 import { AuthorRepository } from './author.repository';
-import { ConsoleLogger, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAuthorInput } from './dto/create-author.input';
 import { UpdateAuthorInput } from './dto/update-author.input';
 
@@ -18,50 +18,51 @@ export class AuthorsService {
   }
 
   findOne(id: string) {
-    const author = this.authorRepository.findOneOrFail(id).catch((error) => {
-      throw new NotFoundException("Author test doesn't exist!");
-    });
+    try {
+      const author = this.authorRepository.findOneOrFail(id);
 
-    return author;
+      return author;
+    } catch (err) {
+      throw new NotFoundException("Author test doesn't exist!");
+    }
   }
 
   findByIds(authorIds: string[]) {
-    return this.authorRepository.findByIds(authorIds).catch((error) => {
-      throw new NotFoundException("Author doesn't exist!");
-    });
+    const author = this.authorRepository.findByIds(authorIds);
+    return author;
   }
 
   async findBooksOfAuthor(authorId: string) {
-    const author = await this.authorRepository
-      .findOneOrFail(authorId, {
+    try {
+      const author = await this.authorRepository.findOneOrFail(authorId, {
         relations: ['books'],
-      })
-      .catch((error) => {
-        throw new NotFoundException("Author doesn't exist!");
       });
 
-    return author.books;
+      return author.books;
+    } catch (error) {
+      throw new NotFoundException("Author doesn't exist!");
+    }
   }
 
   async update(id: string, updateAuthorInput: UpdateAuthorInput) {
-    await this.authorRepository.update(id, updateAuthorInput);
-    const updatedAuthor = await this.authorRepository
-      .findOneOrFail(id)
-      .catch((error) => {
-        throw new NotFoundException("Author doesn't exist!");
-      });
+    try {
+      await this.authorRepository.update(id, updateAuthorInput);
+      const updatedAuthor = await this.authorRepository.findOneOrFail(id);
 
-    return updatedAuthor;
+      return updatedAuthor;
+    } catch (error) {
+      throw new NotFoundException("Author doesn't exist!");
+    }
   }
 
   async remove(id: string) {
-    const authorToRemove = await this.authorRepository
-      .findOneOrFail(id)
-      .catch((error) => {
-        throw new NotFoundException("Author doesn't exist!");
-      });
+    try {
+      const authorToRemove = await this.authorRepository.findOneOrFail(id);
 
-    this.authorRepository.remove(authorToRemove);
-    return authorToRemove;
+      this.authorRepository.remove(authorToRemove);
+      return authorToRemove;
+    } catch (error) {
+      throw new NotFoundException("Author doesn't exist!");
+    }
   }
 }
