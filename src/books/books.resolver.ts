@@ -1,3 +1,4 @@
+import { AddCategoryInput } from './dto/add-category.input';
 import { FindBookArgs } from './dto/find-book.args';
 import {
   Resolver,
@@ -15,12 +16,14 @@ import { UpdateBookInput } from './dto/update-book.input';
 import { ValidationPipe, NotFoundException } from '@nestjs/common';
 import { Author } from 'src/authors/entities/author.entity';
 import { AuthorsService } from 'src/authors/authors.service';
+import { CategoriesService } from 'src/categories/categories.service';
 
 @Resolver(() => Book)
 export class BooksResolver {
   constructor(
     private readonly booksService: BooksService,
     private readonly authorsService: AuthorsService,
+    private readonly categoriesService: CategoriesService,
   ) {}
 
   @Mutation(() => Book)
@@ -63,5 +66,16 @@ export class BooksResolver {
   @Mutation(() => Book)
   removeBook(@Args('id') id: string) {
     return this.booksService.remove(id);
+  }
+
+  @Mutation(() => Book)
+  async addCategory(
+    @Args('addCategoryInput', ValidationPipe)
+    addCategoryInput: AddCategoryInput,
+  ) {
+    const { findBookInput, categoryId } = addCategoryInput;
+    const categoryToAdd = await this.categoriesService.findOne(categoryId);
+
+    return this.booksService.addCategory(findBookInput, categoryToAdd);
   }
 }

@@ -17,12 +17,6 @@ type Author {
   books: [Book!]!
 }
 
-type Category {
-  id: String!
-  value: String!
-  books: [Book!]!
-}
-
 type Book {
   id: ID!
   title: String!
@@ -32,32 +26,39 @@ type Book {
   authors: [Author!]!
 }
 
+type Category {
+  id: String!
+  value: String!
+  books: [Book!]!
+}
+
 type Query {
   books: [Book!]!
-  book(bookId: ID, barcode: String): Book!
+  book(id: ID, barcode: String): Book!
   authors: [Author!]!
   author(id: ID!): Author!
-  users: [User!]!
-  user(id: ID!): User!
   categories: [Category!]!
   category(id: ID!): Category!
+  users: [User!]!
+  user(id: ID!): User!
 }
 
 type Mutation {
   createBook(createBookInput: CreateBookInput!): Book!
   updateBook(updateBookInput: UpdateBookInput!): Book!
   removeBook(id: String!): Book!
+  addCategory(addCategoryInput: AddCategoryInput!): Book!
   createAuthor(createAuthorInput: CreateAuthorInput!): Author!
   updateAuthor(updateAuthorInput: UpdateAuthorInput!): Author!
   removeAuthor(id: ID!): Author!
+  createCategory(createCategoryInput: CreateCategoryInput!): Category!
+  updateCategory(updateCategoryInput: UpdateCategoryInput!): Category!
+  removeCategory(id: String!): Category!
   createUser(createUserInput: CreateUserInput!): User!
   updateUser(updateUserInput: UpdateUserInput!): User!
   removeUser(id: ID!): User!
   checkOutBook(checkOutBookInput: CheckOutBookInput!): User!
   returnBook(returnBookInput: ReturnBookInput!): Book
-  createCategory(createCategoryInput: CreateCategoryInput!): Category!
-  updateCategory(updateCategoryInput: UpdateCategoryInput!): Category!
-  removeCategory(id: String!): Category!
 }
 
 input CreateBookInput {
@@ -73,6 +74,16 @@ input UpdateBookInput {
   id: ID!
 }
 
+input AddCategoryInput {
+  findBookInput: FindBookInput!
+  categoryId: ID!
+}
+
+input FindBookInput {
+  id: ID
+  barcode: String
+}
+
 input CreateAuthorInput {
   name: String!
   age: Int!
@@ -81,6 +92,15 @@ input CreateAuthorInput {
 input UpdateAuthorInput {
   name: String
   age: Int
+  id: ID!
+}
+
+input CreateCategoryInput {
+  value: String!
+}
+
+input UpdateCategoryInput {
+  value: String
   id: ID!
 }
 
@@ -102,21 +122,7 @@ input CheckOutBookInput {
   findBookArgs: FindBookInput!
 }
 
-input FindBookInput {
-  bookId: ID
-  barcode: String
-}
-
 input ReturnBookInput {
   userId: ID!
   findBookInput: FindBookInput!
-}
-
-input CreateCategoryInput {
-  value: String!
-}
-
-input UpdateCategoryInput {
-  value: String
-  id: ID!
 }

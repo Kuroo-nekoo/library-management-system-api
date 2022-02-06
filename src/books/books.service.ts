@@ -1,13 +1,11 @@
 import { FindBookArgs } from './dto/find-book.args';
 import { BookRepository } from './book.repository';
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateBookInput } from './dto/create-book.input';
 import { UpdateBookInput } from './dto/update-book.input';
 import { Author } from 'src/authors/entities/author.entity';
+import { Category } from 'src/categories/entities/category.entity';
+import { FindBookInput } from './dto/find-book.input';
 
 @Injectable()
 export class BooksService {
@@ -27,17 +25,7 @@ export class BooksService {
 
   findOne(findBookArgs: FindBookArgs) {
     try {
-      const { bookId, barcode } = findBookArgs;
-
-      if (!bookId && !barcode) {
-        throw new BadRequestException('You must provide bookId or barcode');
-      }
-
-      if (bookId) {
-        return this.bookRepository.findOne(bookId);
-      } else if (barcode) {
-        return this.bookRepository.findOne({ where: { barcode } });
-      }
+      return this.bookRepository.findOne(findBookArgs);
     } catch (error) {
       throw new NotFoundException("Book doesn't exist");
     }
@@ -73,5 +61,36 @@ export class BooksService {
     } catch (error) {
       throw new NotFoundException("Book doesn't exist!");
     }
+  }
+
+  async addCategory(findBookInput: FindBookInput, categoryToAdd: Category) {
+    const book = await this.findOne(findBookInput);
+
+    if (
+      book.categories.findIndex(
+        (category) => category.id === categoryToAdd.id,
+      ) !== -1
+    ) {
+      throw new NotFoundException('Category already exists!');
+    }
+
+    book.categories.push(categoryToAdd);
+    this.bookRepository.save(book);
+    return book;
+  }
+
+  async removeCategory(findBookInput: FindBookInput, categoryId: string) {
+    const book = await this.findOne(findBookInput);
+    const categoryIdx = book.categories.findIndex(
+      (category) => category.id === categoryId,
+    );
+
+    if (categoryIdx === -1) {
+      throw new NotFoundException("Book doesn't have this category!");
+    }
+
+    book.categories.splice(categoryIdx, 1);
+    this.bookRepository.save(book);
+    return book;
   }
 }

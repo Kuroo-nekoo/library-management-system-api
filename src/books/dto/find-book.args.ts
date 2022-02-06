@@ -7,7 +7,7 @@ export class FindBookArgs {
   @IsString()
   @IsNotEmpty()
   @Field(() => ID, { nullable: true })
-  bookId?: string;
+  id?: string;
 
   @IsOptional()
   @IsString()

@@ -1,3 +1,4 @@
+import { CategoriesModule } from './../categories/categories.module';
 import { BookRepository } from './book.repository';
 import { forwardRef, Module } from '@nestjs/common';
 import { BooksService } from './books.service';
@@ -9,6 +10,7 @@ import { AuthorsModule } from 'src/authors/authors.module';
   imports: [
     TypeOrmModule.forFeature([BookRepository]),
     forwardRef(() => AuthorsModule),
+    CategoriesModule,
   ],
   providers: [BooksResolver, BooksService],
   exports: [BooksService],
