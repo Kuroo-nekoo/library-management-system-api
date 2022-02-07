@@ -1,3 +1,4 @@
+import { CheckedOutBook } from './../checked-out-book/entities/checked-out-book.entity';
 import { CheckOutBookInput } from './dto/check-out-book.input';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserInput } from './dto/create-user.input';
@@ -123,28 +124,39 @@ export class UsersService {
 
   async returnBook(returnBookInput: ReturnBookInput) {
     const { userId, findBookInput } = returnBookInput;
+    let user: User;
+    let bookToReturn: CheckedOutBook;
+    let book: Book;
 
     try {
-      const user = await this.usersRepository.findOneOrFail(userId, {
+      bookToReturn = await this.checkOutBooksService.findOne(findBookInput);
+      book = await this.booksService.findOne(findBookInput);
+    } catch (error) {
+      throw new NotFoundException(
+        `test Book with id '${findBookInput.id}' had not been checked out`,
+      );
+    }
+
+    try {
+      user = await this.usersRepository.findOneOrFail(userId, {
         relations: ['books'],
       });
-      const bookToReturn = await this.booksService.findOne(findBookInput);
-      const bookIdx = user.books.findIndex(
-        (book) => book.id === bookToReturn.id,
-      );
-
-      if (bookIdx === -1) {
-        throw new NotFoundException(
-          `Book with id ${bookToReturn.id} does not belong to user with id ${userId}`,
-        );
-      }
-
-      user.books.splice(bookIdx, 1);
-      bookToReturn.available++;
-      this.usersRepository.save(user);
-      return user;
     } catch (error) {
       throw new NotFoundException(`User with id ${userId} does not exist`);
     }
+
+    const bookIdx = user.books.findIndex((book) => book.id === bookToReturn.id);
+
+    if (bookIdx === -1) {
+      throw new NotFoundException(
+        `Book with id ${bookToReturn.id} does not belong to user with id ${userId}`,
+      );
+    }
+
+    user.books.splice(bookIdx, 1);
+    this.booksService.save({ ...book, available: book.available + 1 });
+    this.checkOutBooksService.remove(bookToReturn.id);
+    this.usersRepository.save(user);
+    return bookToReturn;
   }
 }

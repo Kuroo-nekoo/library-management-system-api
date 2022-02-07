@@ -52,7 +52,7 @@ type Query {
   category(id: ID!): Category!
   users: [User!]!
   user(id: ID!): User!
-  checkedOutBook(id: Int!): CheckedOutBook!
+  checkedOutBook: [CheckedOutBook!]!
 }
 
 type Mutation {
@@ -70,9 +70,9 @@ type Mutation {
   updateUser(updateUserInput: UpdateUserInput!): User!
   removeUser(id: ID!): User!
   checkOutBook(checkOutBookInput: CheckOutBookInput!): User!
-  returnBook(returnBookInput: ReturnBookInput!): Book
+  returnBook(returnBookInput: ReturnBookInput!): CheckedOutBook
   updateCheckedOutBook(updateCheckedOutBookInput: UpdateCheckedOutBookInput!): CheckedOutBook!
-  removeCheckedOutBook(id: Int!): CheckedOutBook!
+  removeCheckedOutBook(id: ID!): CheckedOutBook!
 }
 
 input CreateBookInput {

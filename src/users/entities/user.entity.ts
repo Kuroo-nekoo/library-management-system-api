@@ -24,5 +24,5 @@ export class User {
 
   @Field(() => [CheckedOutBook])
   @OneToMany(() => CheckedOutBook, (book) => book.user, { cascade: true })
-  books: Book[];
+  books: CheckedOutBook[];
 }

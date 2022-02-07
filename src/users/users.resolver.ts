@@ -14,7 +14,6 @@ import { User } from './entities/user.entity';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { ValidationPipe } from '@nestjs/common';
-import { Book } from 'src/books/entities/book.entity';
 import { ReturnBookInput } from './dto/return-book.input';
 
 @Resolver(() => User)
@@ -63,7 +62,7 @@ export class UsersResolver {
     return this.usersService.checkOutBook(checkOutBookInput);
   }
 
-  @Mutation(() => Book, { nullable: true })
+  @Mutation(() => CheckedOutBook, { nullable: true })
   async returnBook(
     @Args('returnBookInput', ValidationPipe) returnBookInput: ReturnBookInput,
   ) {

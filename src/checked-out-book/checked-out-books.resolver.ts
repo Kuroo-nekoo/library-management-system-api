@@ -1,9 +1,10 @@
 import { CheckedOutBooksService } from 'src/checked-out-book/checked-out-books.service';
 import { ValidationPipe } from '@nestjs/common';
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, ID } from '@nestjs/graphql';
 import { CheckedOutBook } from './entities/checked-out-book.entity';
 import { CreateCheckedOutBookInput } from './dto/create-checked-out-book.input';
 import { UpdateCheckedOutBookInput } from './dto/update-checked-out-book.input';
+import { FindBookInput } from 'src/books/dto/find-book.input';
 
 @Resolver(() => CheckedOutBook)
 export class CheckedOutBooksResolver {
@@ -21,11 +22,6 @@ export class CheckedOutBooksResolver {
     return this.checkedOutBookService.findAll();
   }
 
-  @Query(() => CheckedOutBook, { name: 'checkedOutBook' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.checkedOutBookService.findOne(id);
-  }
-
   @Mutation(() => CheckedOutBook)
   updateCheckedOutBook(
     @Args('updateCheckedOutBookInput')
@@ -38,7 +34,7 @@ export class CheckedOutBooksResolver {
   }
 
   @Mutation(() => CheckedOutBook)
-  removeCheckedOutBook(@Args('id', { type: () => Int }) id: number) {
+  removeCheckedOutBook(@Args('id', { type: () => ID }) id: string) {
     return this.checkedOutBookService.remove(id);
   }
 }
