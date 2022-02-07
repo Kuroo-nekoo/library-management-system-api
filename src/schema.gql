@@ -14,6 +14,8 @@ type Book {
   title: String!
   barcode: String!
   available: Int!
+  frontImg: String!
+  backImg: String!
   categories: [Category!]!
   authors: [Author!]!
 }
@@ -37,6 +39,8 @@ type CheckedOutBook {
   title: String!
   barcode: String!
   available: Int!
+  frontImg: String!
+  backImg: String!
   categories: [Category!]!
   authors: [Author!]!
   checkOutDate: String!
@@ -78,12 +82,16 @@ type Mutation {
 input CreateBookInput {
   title: String!
   barcode: String!
+  frontImg: String!
+  backImg: String!
   authorIds: [String!]!
 }
 
 input UpdateBookInput {
   title: String
   barcode: String
+  frontImg: String
+  backImg: String
   authorIds: [String!]
   id: ID!
 }
@@ -146,6 +154,8 @@ input ReturnBookInput {
 input UpdateCheckedOutBookInput {
   title: String
   barcode: String
+  frontImg: String
+  backImg: String
   checkOutDate: String
   dueDay: String
   id: Int!

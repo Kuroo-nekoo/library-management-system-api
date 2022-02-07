@@ -22,6 +22,14 @@ export class Book {
   @Column('int', { default: 0 })
   available: number;
 
+  @Field()
+  @Column({ nullable: true })
+  frontImg: string;
+
+  @Field()
+  @Column({ nullable: true })
+  backImg: string;
+
   @Field(() => [Category])
   @ManyToMany(() => Author, (author) => author.books)
   categories: Category[];
