@@ -10,6 +10,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { CategoriesModule } from './categories/categories.module';
 import { CheckedOutBookModule } from './checked-out-book/checked-out-books.module';
+import { RoomsModule } from './rooms/rooms.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { CheckedOutBookModule } from './checked-out-book/checked-out-books.modul
     AuthModule,
     CategoriesModule,
     CheckedOutBookModule,
+    RoomsModule,
   ],
 })
 export class AppModule {}

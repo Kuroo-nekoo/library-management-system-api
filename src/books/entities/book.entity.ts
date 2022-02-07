@@ -19,7 +19,7 @@ export class Book {
   barcode: string;
 
   @Field(() => Int)
-  @Column('int', { default: 0 })
+  @Column()
   available: number;
 
   @Field()

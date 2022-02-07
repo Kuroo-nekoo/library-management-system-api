@@ -1,6 +1,5 @@
 import { CheckedOutBook } from './../../checked-out-book/entities/checked-out-book.entity';
 import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { Book } from 'src/books/entities/book.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @ObjectType()

@@ -48,13 +48,13 @@ export class BooksService {
       this.bookRepository.remove(bookToRemove);
       return bookToRemove;
     } catch (error) {
-      throw new NotFoundException("Book doesn't exist!");
+      throw new NotFoundException('Can not remove this book!');
     }
   }
 
   async findBookAuthors(id: string) {
     try {
-      const book = await this.bookRepository.findOne(id, {
+      const book = await this.bookRepository.findOneOrFail(id, {
         relations: ['authors'],
       });
 

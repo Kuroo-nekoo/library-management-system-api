@@ -1,6 +1,5 @@
 import { InputType, Field } from '@nestjs/graphql';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
-import { Author } from 'src/authors/entities/author.entity';
 
 @InputType()
 export class CreateBookInput {

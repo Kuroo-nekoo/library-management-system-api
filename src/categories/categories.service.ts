@@ -31,7 +31,9 @@ export class CategoriesService {
       const updatedCategory = await this.categoriesRepository.findOneOrFail(id);
 
       return updatedCategory;
-    } catch (error) {}
+    } catch (error) {
+      throw new NotFoundException("Category doesn't exist!");
+    }
   }
 
   async remove(id: string) {

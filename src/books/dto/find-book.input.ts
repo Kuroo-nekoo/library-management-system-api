@@ -4,15 +4,15 @@ import { FindBookArgs } from './find-book.args';
 
 @InputType()
 export class FindBookInput extends FindBookArgs {
+  @Field(() => ID, { nullable: true })
   @IsOptional()
   @IsString()
   @IsNotEmpty()
-  @Field(() => ID, { nullable: true })
   id?: string;
 
+  @Field({ nullable: true })
   @IsOptional()
   @IsString()
   @IsNotEmpty()
-  @Field({ nullable: true })
   barcode?: string;
 }

@@ -47,6 +47,11 @@ type CheckedOutBook {
   dueDay: String!
 }
 
+type Room {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
 type Query {
   books: [Book!]!
   book(id: ID, barcode: String): Book!
@@ -57,6 +62,8 @@ type Query {
   users: [User!]!
   user(id: ID!): User!
   checkedOutBook: [CheckedOutBook!]!
+  rooms: [Room!]!
+  room(id: Int!): Room!
 }
 
 type Mutation {
@@ -77,6 +84,9 @@ type Mutation {
   returnBook(returnBookInput: ReturnBookInput!): CheckedOutBook
   updateCheckedOutBook(updateCheckedOutBookInput: UpdateCheckedOutBookInput!): CheckedOutBook!
   removeCheckedOutBook(id: ID!): CheckedOutBook!
+  createRoom(createRoomInput: CreateRoomInput!): Room!
+  updateRoom(updateRoomInput: UpdateRoomInput!): Room!
+  removeRoom(id: Int!): Room!
 }
 
 input CreateBookInput {
@@ -158,5 +168,16 @@ input UpdateCheckedOutBookInput {
   backImg: String
   checkOutDate: String
   dueDay: String
+  id: Int!
+}
+
+input CreateRoomInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateRoomInput {
+  """Example field (placeholder)"""
+  exampleField: Int
   id: Int!
 }

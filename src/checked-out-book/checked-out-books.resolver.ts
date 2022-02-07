@@ -1,10 +1,9 @@
 import { CheckedOutBooksService } from 'src/checked-out-book/checked-out-books.service';
 import { ValidationPipe } from '@nestjs/common';
-import { Resolver, Query, Mutation, Args, Int, ID } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, ID } from '@nestjs/graphql';
 import { CheckedOutBook } from './entities/checked-out-book.entity';
 import { CreateCheckedOutBookInput } from './dto/create-checked-out-book.input';
 import { UpdateCheckedOutBookInput } from './dto/update-checked-out-book.input';
-import { FindBookInput } from 'src/books/dto/find-book.input';
 
 @Resolver(() => CheckedOutBook)
 export class CheckedOutBooksResolver {
