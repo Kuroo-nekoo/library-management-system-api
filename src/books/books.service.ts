@@ -6,6 +6,7 @@ import { UpdateBookInput } from './dto/update-book.input';
 import { Author } from 'src/authors/entities/author.entity';
 import { Category } from 'src/categories/entities/category.entity';
 import { FindBookInput } from './dto/find-book.input';
+import { Book } from './entities/book.entity';
 
 @Injectable()
 export class BooksService {
@@ -92,5 +93,9 @@ export class BooksService {
     book.categories.splice(categoryIdx, 1);
     this.bookRepository.save(book);
     return book;
+  }
+
+  save(book: Book) {
+    return this.bookRepository.save(book);
   }
 }

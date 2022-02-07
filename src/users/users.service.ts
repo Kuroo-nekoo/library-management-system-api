@@ -103,6 +103,7 @@ export class UsersService {
       throw new NotFoundException('There are no available books');
     } else {
       bookToCheckOut.available--;
+      this.booksService.save(bookToCheckOut);
     }
 
     user.books.push(
